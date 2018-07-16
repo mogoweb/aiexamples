@@ -23,11 +23,11 @@ cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y), 1))
 train_step = tf.train.AdagradOptimizer(0.3).minimize(cross_entropy)
 
 tf.global_variables_initializer().run()
-for i in range(3000)
+for i in range(3000):
     batch_xs, batch_ys = mnist.train.next_batch(100)
     train_step.run({x: batch_xs, y_: batch_ys, keep_prob: 0.75})
 
 correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
-acurracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-print(accuracy, eval({x: mnist.test.images, y_: mnist.test.labels, keep_prob: 1.0}))
+accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+print(accuracy.eval({x: mnist.test.images, y_: mnist.test.labels, keep_prob: 1.0}))
 
