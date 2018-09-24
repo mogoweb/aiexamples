@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">识狗君</string>
+    <string name="camera_error">设备不支持Camera2 API.</string>
+    <string name="take_photo">拍照</string>
+    <string name="select_photo">从照片库选择</string>
+</resources>

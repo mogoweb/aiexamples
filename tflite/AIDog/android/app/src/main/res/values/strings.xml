@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">AI Dog</string>
+    <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="select_photo">Select Photo</string>
+</resources>
