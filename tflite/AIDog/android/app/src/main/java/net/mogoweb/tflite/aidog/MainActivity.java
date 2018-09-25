@@ -1,9 +1,14 @@
 package net.mogoweb.tflite.aidog;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,9 +18,12 @@ import android.widget.TextView;
 
 import java.io.IOException;
 
-public class MainActivity extends AppCompatActivity {
-    private int REQUEST_CAMERA = 0;
-    private int SELECT_FILE = 1;
+public class MainActivity extends AppCompatActivity
+        implements ActivityCompat.OnRequestPermissionsResultCallback {
+    private static final int REQUEST_CAMERA = 0;
+    private static final int SELECT_FILE = 1;
+
+    private static final int PERMISSION_REQUEST_CAMERA = 0;
 
     private static final String TAG = "AIDog";
 
@@ -23,18 +31,27 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView tvResult;
 
+    private View mLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mLayout = findViewById(R.id.container);
 
         Button btnTakePhoto = (Button)findViewById(R.id.btnTakePhoto);
         btnTakePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean result = Utility.checkPermission(MainActivity.this);
-                if (result)
+                // Check if the Camera permission has been granted
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    // Permission is already available, start camera
                     cameraIntent();
+                } else {
+                    // Permission is missing and must be requested.
+                    requestCameraPermission();
+                }
             }
         });
         Button btnSelectPhoto = (Button)findViewById(R.id.btnSelectPhoto);
@@ -55,6 +72,36 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Requests the {@link android.Manifest.permission#CAMERA} permission.
+     * If an additional rationale should be displayed, the user has to launch the request from
+     * a SnackBar that includes additional information.
+     */
+    private void requestCameraPermission() {
+        // Permission has not been granted and must be requested.
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.CAMERA)) {
+            // Provide an additional rationale to the user if the permission was not granted
+            // and the user would benefit from additional context for the use of the permission.
+            // Display a SnackBar with cda button to request the missing permission.
+            Snackbar.make(mLayout, R.string.camera_access_required,
+                    Snackbar.LENGTH_INDEFINITE).setAction(R.string.ok, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Request the permission
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.CAMERA},
+                            PERMISSION_REQUEST_CAMERA);
+                }
+            }).show();
+
+        } else {
+            // Request the permission. The result will be received in onRequestPermissionResult().
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
+        }
+    }
+
     private void cameraIntent()
     {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -67,6 +114,25 @@ public class MainActivity extends AppCompatActivity {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT); //
         startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        // BEGIN_INCLUDE(onRequestPermissionsResult)
+        if (requestCode == PERMISSION_REQUEST_CAMERA) {
+            // Request for camera permission.
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission has been granted. Start camera.
+                cameraIntent();
+            } else {
+                // Permission request was denied.
+                Snackbar.make(mLayout, R.string.camera_permission_denied,
+                        Snackbar.LENGTH_SHORT)
+                        .show();
+            }
+        }
+        // END_INCLUDE(onRequestPermissionsResult)
     }
 
     @Override

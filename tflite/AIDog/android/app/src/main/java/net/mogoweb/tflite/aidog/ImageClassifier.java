@@ -16,6 +16,7 @@ limitations under the License.
 package net.mogoweb.tflite.aidog;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.os.SystemClock;
@@ -93,7 +94,7 @@ public class ImageClassifier {
           });
 
   /** Initializes an {@code ImageClassifier}. */
-  ImageClassifier(Activity activity) throws IOException {
+  ImageClassifier(Context activity) throws IOException {
     tflite = new Interpreter(loadModelFile(activity));
     labelList = loadLabelList(activity);
     imgData =
@@ -158,7 +159,7 @@ public class ImageClassifier {
   }
 
   /** Reads label list from Assets. */
-  private List<String> loadLabelList(Activity activity) throws IOException {
+  private List<String> loadLabelList(Context activity) throws IOException {
     List<String> labelList = new ArrayList<String>();
     BufferedReader reader =
         new BufferedReader(new InputStreamReader(activity.getAssets().open(LABEL_PATH)));
@@ -171,7 +172,7 @@ public class ImageClassifier {
   }
 
   /** Memory-map the model file in Assets. */
-  private MappedByteBuffer loadModelFile(Activity activity) throws IOException {
+  private MappedByteBuffer loadModelFile(Context activity) throws IOException {
     AssetFileDescriptor fileDescriptor = activity.getAssets().openFd(MODEL_PATH);
     FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
     FileChannel fileChannel = inputStream.getChannel();
