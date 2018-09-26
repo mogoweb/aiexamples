@@ -16,7 +16,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +44,6 @@ public class AIDogTest {
 
     @Test
     public void predictImages() {
-        List<String> list = new ArrayList<String>();
 
         boolean hasPermission = true;
         int currentAPIVersion = Build.VERSION.SDK_INT;
@@ -62,28 +65,49 @@ public class AIDogTest {
             Log.e(TAG, "Failed to initialize an image classifier.");
         }
 
-        File imagesDirectory = new File(Environment.getExternalStorageDirectory().getPath() + "/Images");
-        if (imagesDirectory.isDirectory()) {
-            for (File dir : imagesDirectory.listFiles()) {
-                if (dir.isDirectory()) {
-                    String dirName = dir.getName();
-                    String trueLabel = dirName.replace('-', ' ').replace('_', ' ');
+        File imagesDirectory = new File(Environment.getExternalStorageDirectory().getPath() + "/TestImages");
+        try {
+            FileOutputStream resultFile = new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/results.txt");
 
-                    Log.i(TAG, "trueLabel:" + trueLabel);
-                    for (File file : dir.listFiles()) {
-                        String path = file.getAbsolutePath();
-                        if (path.endsWith(".jpg") || path.endsWith(".jpeg") || path.endsWith(".png")) {
-                            list.add(path);
-                            Log.i(TAG, path);
-                            Bitmap bitmap = BitmapFactory.decodeFile(path);
-                            String result = classifier.classifyFrame(bitmap);
-                            Log.i(TAG, result);
+            if (imagesDirectory.isDirectory()) {
+                for (File dir : imagesDirectory.listFiles()) {
+                    if (dir.isDirectory()) {
+                        String dirName = dir.getName();
+                        String trueLabel = dirName.replace('-', ' ').replace('_', ' ');
+
+                        for (File file : dir.listFiles()) {
+                            String path = file.getAbsolutePath();
+                            if (path.endsWith(".jpg") || path.endsWith(".jpeg") || path.endsWith(".png")) {
+                                Bitmap bitmap = BitmapFactory.decodeFile(path);
+                                Bitmap bm = Bitmap.createScaledBitmap(bitmap, ImageClassifier.DIM_IMG_SIZE_X, ImageClassifier.DIM_IMG_SIZE_Y, true);
+                                String result = classifier.classifyBitmap(bm);
+                                result = trueLabel + "_" + result;
+                                resultFile.write(result.getBytes());
+                            }
                         }
                     }
                 }
             }
+            resultFile.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        assertTrue(list.size() > 0);
+        File results = new File(Environment.getExternalStorageDirectory().getPath() + "/results.txt");
+        assertTrue(results.exists());
+        try {
+            long fileLength = results.length();
+            LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(results));
+            lineNumberReader.skip(fileLength);
+            int lines = lineNumberReader.getLineNumber();
+            lineNumberReader.close();
+            assertEquals(lines, 15 * 120);
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
     }
 }

@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.os.SystemClock;
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -125,6 +126,49 @@ public class ImageClassifier {
     // print the results
     String textToShow = printTopKLabels();
     textToShow = Long.toString(endTime - startTime) + "ms" + textToShow;
+    return textToShow;
+  }
+
+  /** Classifies a bitmap */
+  @VisibleForTesting
+  public String classifyBitmap(Bitmap bitmap) {
+    if (tflite == null) {
+      Log.e(TAG, "Image classifier has not been initialized; Skipped.");
+      return "Uninitialized Classifier.";
+    }
+    convertBitmapToByteBuffer(bitmap);
+    // Here's where the magic happens!!!
+    long startTime = SystemClock.uptimeMillis();
+    tflite.run(imgData, labelProbArray);
+    long endTime = SystemClock.uptimeMillis();
+    Log.d(TAG, "Timecost to run model inference: " + Long.toString(endTime - startTime));
+
+    // smooth the results
+    applyFilter();
+
+    // print the results
+    String textToShow = printTopK();
+    textToShow = Long.toString(endTime - startTime) + textToShow;
+    return textToShow;
+  }
+
+  /** Prints top-K labels, to be saved to results.txt. */
+  @VisibleForTesting
+  private String printTopK() {
+    for (int i = 0; i < labelList.size(); ++i) {
+      sortedLabels.add(
+              new AbstractMap.SimpleEntry<>(labelList.get(i), labelProbArray[0][i]));
+      if (sortedLabels.size() > RESULTS_TO_SHOW) {
+        sortedLabels.poll();
+      }
+    }
+    String textToShow = "";
+    final int size = sortedLabels.size();
+    for (int i = 0; i < size; ++i) {
+      Map.Entry<String, Float> label = sortedLabels.poll();
+      textToShow = String.format("_%s_%4.2f", label.getKey(), label.getValue()) + textToShow;
+    }
+    textToShow += "\n";
     return textToShow;
   }
 
