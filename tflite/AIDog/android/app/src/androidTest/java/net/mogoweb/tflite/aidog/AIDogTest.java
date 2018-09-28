@@ -1,28 +1,18 @@
 package net.mogoweb.tflite.aidog;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Environment;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.LineNumberReader;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -42,6 +32,24 @@ public class AIDogTest {
         assertEquals("net.mogoweb.tflite.aidog", appContext.getPackageName());
     }
 
+    @Test
+    public void predictSingleImage() {
+        File image = new File(Environment.getExternalStorageDirectory().getPath() + "/TestImages/n02085620-Chihuahua/n02085620_500.jpg");
+        assertTrue(image.exists() && image.isFile());
+        Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath());
+        Bitmap bm = Bitmap.createScaledBitmap(bitmap, ImageClassifier.DIM_IMG_SIZE_X, ImageClassifier.DIM_IMG_SIZE_Y, true);
+        ImageClassifier classifier = null;
+        try {
+            classifier = new ImageClassifier(InstrumentationRegistry.getTargetContext());
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to initialize an image classifier.");
+            assertTrue(false);
+        }
+        String result = classifier.classifyBitmap(bm);
+        Log.i(TAG, result);
+    }
+
+    /*
     @Test
     public void predictImages() {
 
@@ -110,4 +118,5 @@ public class AIDogTest {
         }
 
     }
+    */
 }
