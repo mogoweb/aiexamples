@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
@@ -12,7 +13,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.LineNumberReader;
 
 import static org.junit.Assert.*;
 
@@ -45,27 +50,13 @@ public class AIDogTest {
             Log.e(TAG, "Failed to initialize an image classifier.");
             assertTrue(false);
         }
+
         String result = classifier.classifyFrame(bm);
         Log.i(TAG, result);
     }
 
-    /*
     @Test
     public void predictImages() {
-
-        boolean hasPermission = true;
-        int currentAPIVersion = Build.VERSION.SDK_INT;
-        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(InstrumentationRegistry.getTargetContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                hasPermission = false;
-            }
-        }
-        if (!hasPermission) {
-            assertTrue(false);
-            return;
-        }
-
         ImageClassifier classifier = null;
         try {
             classifier = new ImageClassifier(InstrumentationRegistry.getTargetContext());
@@ -116,7 +107,5 @@ public class AIDogTest {
             e.printStackTrace();
             assertTrue(false);
         }
-
     }
-    */
 }

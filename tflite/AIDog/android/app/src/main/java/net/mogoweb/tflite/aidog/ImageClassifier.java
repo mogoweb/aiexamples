@@ -233,7 +233,7 @@ public class ImageClassifier {
       return;
     }
     imgData.rewind();
-    Log.i(TAG, "width:" + bitmap.getWidth() + ",height:" + bitmap.getHeight());
+
     try (FileOutputStream out = new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/test.png")) {
       bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
       // PNG is a lossless format, the compression factor (100) is ignored
@@ -247,8 +247,6 @@ public class ImageClassifier {
     for (int i = 0; i < DIM_IMG_SIZE_X; ++i) {
       for (int j = 0; j < DIM_IMG_SIZE_Y; ++j) {
         final int val = intValues[pixel++];
-        Log.i(TAG, "val:" + Integer.toHexString(val));
-        Log.i(TAG, "xx:" + (((val >> 16) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
         imgData.putFloat((((val >> 16) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
         imgData.putFloat((((val >> 8) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
         imgData.putFloat((((val) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
