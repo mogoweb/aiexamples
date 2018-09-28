@@ -19,11 +19,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
@@ -45,10 +47,10 @@ public class ImageClassifier {
   private static final String TAG = "TfLiteCameraDemo";
 
   /** Name of the model file stored in Assets. */
-  private static final String MODEL_PATH = "dog_graph_inception_v3.lite";
+  private static final String MODEL_PATH = "optimized_dog_graph_mobilenet_224.lite";
 
   /** Name of the label file stored in Assets. */
-  private static final String LABEL_PATH = "dog_labels_inception_v3.txt";
+  private static final String LABEL_PATH = "dog_labels_mobilenet_224.txt";
 
   /** Number of results to show in the UI. */
   private static final int RESULTS_TO_SHOW = 3;
@@ -58,8 +60,8 @@ public class ImageClassifier {
 
   private static final int DIM_PIXEL_SIZE = 3;
 
-  static final int DIM_IMG_SIZE_X = 299;
-  static final int DIM_IMG_SIZE_Y = 299;
+  static final int DIM_IMG_SIZE_X = 224;
+  static final int DIM_IMG_SIZE_Y = 224;
 
   private static final int IMAGE_MEAN = 128;
   private static final float IMAGE_STD = 128.0f;
@@ -231,6 +233,13 @@ public class ImageClassifier {
       return;
     }
     imgData.rewind();
+    Log.i(TAG, "width:" + bitmap.getWidth() + ",height:" + bitmap.getHeight());
+    try (FileOutputStream out = new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/test.png")) {
+      bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+      // PNG is a lossless format, the compression factor (100) is ignored
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
     // Convert the image to floating point.
     int pixel = 0;
@@ -238,6 +247,8 @@ public class ImageClassifier {
     for (int i = 0; i < DIM_IMG_SIZE_X; ++i) {
       for (int j = 0; j < DIM_IMG_SIZE_Y; ++j) {
         final int val = intValues[pixel++];
+        Log.i(TAG, "val:" + Integer.toHexString(val));
+        Log.i(TAG, "xx:" + (((val >> 16) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
         imgData.putFloat((((val >> 16) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
         imgData.putFloat((((val >> 8) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
         imgData.putFloat((((val) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);

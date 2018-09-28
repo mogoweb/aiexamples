@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 
 project.ext.ASSET_DIR = projectDir.toString() + '/src/main/assets'
 
-assert file(project.ext.ASSET_DIR + "/dog_graph_inception_v3.lite").exists()
-assert file(project.ext.ASSET_DIR + "/dog_labels_inception_v3.txt").exists()
+assert file(project.ext.ASSET_DIR + "/optimized_dog_graph_mobilenet_224.lite").exists()
+assert file(project.ext.ASSET_DIR + "/dog_labels_mobilenet_224.txt").exists()
 
 android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "net.mogoweb.tflite.aidog"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"

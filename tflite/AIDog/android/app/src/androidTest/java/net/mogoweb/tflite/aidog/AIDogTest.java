@@ -37,7 +37,7 @@ public class AIDogTest {
         File image = new File(Environment.getExternalStorageDirectory().getPath() + "/TestImages/n02085620-Chihuahua/n02085620_500.jpg");
         assertTrue(image.exists() && image.isFile());
         Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath());
-        Bitmap bm = Bitmap.createScaledBitmap(bitmap, ImageClassifier.DIM_IMG_SIZE_X, ImageClassifier.DIM_IMG_SIZE_Y, true);
+        Bitmap bm = Bitmap.createScaledBitmap(bitmap, ImageClassifier.DIM_IMG_SIZE_X, ImageClassifier.DIM_IMG_SIZE_Y, false);
         ImageClassifier classifier = null;
         try {
             classifier = new ImageClassifier(InstrumentationRegistry.getTargetContext());
@@ -45,7 +45,7 @@ public class AIDogTest {
             Log.e(TAG, "Failed to initialize an image classifier.");
             assertTrue(false);
         }
-        String result = classifier.classifyBitmap(bm);
+        String result = classifier.classifyFrame(bm);
         Log.i(TAG, result);
     }
 
