@@ -51,8 +51,10 @@ public class AIDogTest {
             assertTrue(false);
         }
 
-        String result = classifier.classifyFrame(bm);
-        Log.i(TAG, result);
+        for (int i = 0; i < 20; i++) {
+            String result = classifier.classifyFrame(bm);
+            Log.i(TAG, result);
+        }
     }
 
     @Test
