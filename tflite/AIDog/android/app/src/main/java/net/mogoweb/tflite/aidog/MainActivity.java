@@ -147,17 +147,16 @@ public class MainActivity extends AppCompatActivity
     }
     @SuppressWarnings("deprecation")
     private void onSelectFromGalleryResult(Intent data) {
-        Bitmap bm = null;
         if (data != null) {
             try {
-                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+                Bitmap bm = Bitmap.createScaledBitmap(bitmap, ImageClassifier.DIM_IMG_SIZE_X, ImageClassifier.DIM_IMG_SIZE_Y, false);
+                String textToShow = classifier.classifyFrame(bm);
+                tvResult.setText(textToShow);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
-        String textToShow = classifier.classifyFrame(bm);
-        tvResult.setText(textToShow);
     }
 
     private void onCaptureImageResult(Intent data) {
