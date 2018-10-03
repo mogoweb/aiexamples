@@ -945,7 +945,7 @@ def add_jpeg_decoding(module_spec):
   return jpeg_data, resized_image
 
 
-def export_model(module_spec, class_count, saved_model_dir):
+def export_model(module_spec, class_count, saved_model_dir, model_version):
   """Exports model for serving.
 
   Args:
@@ -956,9 +956,12 @@ def export_model(module_spec, class_count, saved_model_dir):
   # The SavedModel should hold the eval graph.
   sess, in_image, _, _, _, _ = build_eval_session(module_spec, class_count)
   with sess.graph.as_default() as graph:
+    output_path = os.path.join(
+      tf.compat.as_bytes(saved_model_dir),
+      tf.compat.as_bytes(str(model_version)))
     tf.saved_model.simple_save(
         sess,
-        saved_model_dir,
+        output_path,
         inputs={'image': in_image},
         outputs={'prediction': graph.get_tensor_by_name('final_result:0')},
         legacy_init_op=tf.group(tf.tables_initializer(), name='legacy_init_op')
@@ -1135,7 +1138,7 @@ def main(_):
       f.write('\n'.join(image_lists.keys()) + '\n')
 
     if FLAGS.saved_model_dir:
-      export_model(module_spec, class_count, FLAGS.saved_model_dir)
+      export_model(module_spec, class_count, FLAGS.saved_model_dir, FLAGS.model_version)
 
 
 if __name__ == '__main__':
@@ -1311,5 +1314,10 @@ if __name__ == '__main__':
       type=str,
       default='',
       help='Where to save the exported graph.')
+  parser.add_argument(
+    '--model_version',
+    type=int,
+    default=1,
+    help="""Version number of the model.""")
   FLAGS, unparsed = parser.parse_known_args()
   tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
