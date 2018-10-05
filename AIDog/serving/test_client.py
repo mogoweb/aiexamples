@@ -52,6 +52,7 @@ if __name__ == "__main__":
   input_mean = 0
   input_std = 255
   model_name = "default"
+  enable_ssl = False
 
   parser = argparse.ArgumentParser()
   parser.add_argument("--image", help="image to be processed")
@@ -61,6 +62,7 @@ if __name__ == "__main__":
   parser.add_argument("--input_mean", type=int, help="input mean")
   parser.add_argument("--input_std", type=int, help="input std")
   parser.add_argument("--model_name", help="name of predict model")
+  parser.add_argument("--enable_ssl", type=bool, help="if use https")
   args = parser.parse_args()
 
   if args.image:
@@ -77,6 +79,8 @@ if __name__ == "__main__":
     input_std = args.input_std
   if args.model_name:
     model_name = args.model_name
+  if args.enable_ssl:
+    enable_ssl = args.enable_ssl
 
   t = read_tensor_from_image_file(
     file_name,
@@ -85,7 +89,10 @@ if __name__ == "__main__":
     input_mean=input_mean,
     input_std=input_std)
 
-  endpoint = "http://ilego.club:8500"
+  if enable_ssl :
+    endpoint = "https://ilego.club:8500"
+  else:
+    endpoint = "http://ilego.club:8500"
 
   print(t.shape)
   json_data = {"model_name": model_name, "data": {"image": t.tolist()}}
