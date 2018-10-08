@@ -26,7 +26,7 @@ var getImageRGB = function (canvasId, imgUrl, callback, imgWidth, imgHeight) {
           cols = [];
           for (j = 0; j < result.height; j++) {
             rgb = [];
-            index = i * result.width + j * 4;           // 每个点包含RGBA 4个分量
+            index = i * result.width + j * 4;         // 每个点包含RGBA 4个分量
             rgb.push(result.data[index] / 255);       // r
             rgb.push(result.data[index + 1] / 255);   // g
             rgb.push(result.data[index + 2] / 255);   // b
