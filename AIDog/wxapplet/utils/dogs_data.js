@@ -1,3 +1,5 @@
+// 本地dogs JSON数据
+var dogs_json = 
 [
     {
         "cname": "吉娃娃",
@@ -840,3 +842,8 @@
         "ename": "african hunting dog"
     }
 ]
+
+// 定义数据导出
+module.exports = {
+  dog_list: dogs_json
+}
