@@ -1,52 +1,7 @@
 import tensorflow as tf
-from tensorflow.python.framework import ops
-
-def copy_variable_to_graph(org_instance, to_graph, copied_variables={}):
-  """
-  Copies the Variable instance 'org_instance' into the graph 'to_graph'.
-  The dict 'copied_variables', if provided, will be updated with
-  mapping the new variable's name to the instance.
-  """
-
-  if not isinstance(org_instance, tf.Variable):
-    raise TypeError(str(org_instance) + " is not a Variable")
-
-  # The name of the new variable
-  new_name = org_instance.name[:org_instance.name.index(':')]
-  print("new_name:", new_name)
-
-  # Get the collections that the new instance needs to be added to.
-  # The new collections will also be a part of the given namespace,
-  # except the special ones required for variable initialization and
-  # training.
-  collections = []
-  for name, collection in org_instance.graph._collections.items():
-    if org_instance in collection:
-      if (name == ops.GraphKeys.VARIABLES or
-          name == ops.GraphKeys.TRAINABLE_VARIABLES):
-        collections.append(name)
-
-  # See if its trainable.
-  trainable = (org_instance in org_instance.graph.get_collection(
-    ops.GraphKeys.TRAINABLE_VARIABLES))
-  # Get the initial value
-  with org_instance.graph.as_default():
-    temp_session = tf.Session()
-    init_value = temp_session.run(org_instance.initialized_value())
-    print("init_value:", init_value)
-
-  # Initialize the new variable
-  with to_graph.as_default():
-    new_var = tf.Variable(init_value,
-                          trainable,
-                          name=new_name,
-                          collections=collections,
-                          validate_shape=False)
-
-  # Add to the copied_variables dict
-  copied_variables[new_var.name] = new_var
-
-  return new_var
+from tensorflow.python.tools import saved_model_utils
+from tensorflow.python.framework import graph_util
+from tensorflow.python.saved_model import tag_constants
 
 with tf.Graph().as_default() as g1:
   base64_str = tf.placeholder(tf.string, name='input_string')
@@ -69,13 +24,17 @@ g1def = g1.as_graph_def()
 
 with tf.Graph().as_default() as g2:
   with tf.Session(graph=g2) as sess:
+    input_graph_def = saved_model_utils.get_meta_graph_def(
+        "./model", tag_constants.SERVING).graph_def
+
     tf.saved_model.loader.load(sess, ["serve"], "./model")
 
-    variables = tf.global_variables()
-    for v in variables:
-      print("v:", v.name)
-
-g2def = g2.as_graph_def()
+    g2def = graph_util.convert_variables_to_constants(
+        sess,
+        input_graph_def,
+        ["myOutput"],
+        variable_names_whitelist=None,
+        variable_names_blacklist=None)
 
 with tf.Graph().as_default() as g_combined:
   with tf.Session(graph=g_combined) as sess:
@@ -87,16 +46,7 @@ with tf.Graph().as_default() as g_combined:
     z, = tf.import_graph_def(g2def, input_map={"myInput:0": y}, return_elements=["myOutput:0"])
     tf.identity(z, "myOutput")
 
-    sess.run(tf.global_variables_initializer())
-
-    print("before copy variables:", tf.global_variables())
-    copied_variables = {}
-    for var in variables:
-      copy_variable_to_graph(var, g_combined, copied_variables={})
-    print("after copy variables:", tf.global_variables())
-
     tf.saved_model.simple_save(sess,
               "./modelbase64",
               inputs={"base64_input": x},
               outputs={"myOutput": z})
-

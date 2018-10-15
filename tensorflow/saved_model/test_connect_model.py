@@ -8,7 +8,7 @@ with tf.Session(graph=tf.Graph()) as sess:
   tf.saved_model.loader.load(sess, ["serve"], "./modelbase64")
   graph = tf.get_default_graph()
 
-  with open("./0.png", "rb") as image_file:
+  with open("./5.png", "rb") as image_file:
     encoded_string = str(base64.urlsafe_b64encode(image_file.read()), "utf-8")
 
   x = sess.graph.get_tensor_by_name('base64_input:0')
@@ -16,4 +16,4 @@ with tf.Session(graph=tf.Graph()) as sess:
 
   scores = sess.run(y,
            feed_dict={x: encoded_string})
-  print("predict: %d, actual: %d" % (np.argmax(scores, 1), np.argmax(batch_ys, 1)))
+  print("predict: %d, actual: %d" % (np.argmax(scores, 1), 5))
