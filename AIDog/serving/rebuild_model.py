@@ -19,8 +19,9 @@ def add_png_decoding(input_width, input_height, input_depth):
     Tensors for the node to feed PNG data into, and the output of the
       preprocessing steps.
   """
-  png_data = tf.placeholder(tf.string, name='DecodePNGInput')
-  decoded_image = tf.image.decode_png(png_data, channels=input_depth)
+  base64_str = tf.placeholder(tf.string, name='input_string')
+  input_str = tf.decode_base64(base64_str)
+  decoded_image = tf.image.decode_png(input_str, channels=input_depth)
   # Convert from full range of uint8 to range [0,1] of float32.
   decoded_image_as_float = tf.image.convert_image_dtype(decoded_image,
                                                         tf.float32)
@@ -30,7 +31,7 @@ def add_png_decoding(input_width, input_height, input_depth):
   resized_image = tf.image.resize_bilinear(decoded_image_4d,
                                            resize_shape_as_int)
   tf.identity(resized_image, name="DecodePNGOutput")
-  return png_data, resized_image
+  return input_str, resized_image
 
 
 def main(_):
@@ -70,7 +71,7 @@ def main(_):
   with tf.Graph().as_default() as g_combined:
     with tf.Session(graph=g_combined) as sess:
       x = tf.placeholder(tf.string, name="base64_string")
-      y, = tf.import_graph_def(g1def, input_map={"DecodePNGInput:0": x}, return_elements=["DecodePNGOutput:0"])
+      y, = tf.import_graph_def(g1def, input_map={"input_string:0": x}, return_elements=["DecodePNGOutput:0"])
       z, = tf.import_graph_def(g2def, input_map={"Placeholder:0": y}, return_elements=["final_result:0"])
 
       tf.identity(z, "myOutput")
@@ -98,4 +99,3 @@ if __name__ == '__main__':
 
   FLAGS, unparsed = parser.parse_known_args()
   tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
-  
