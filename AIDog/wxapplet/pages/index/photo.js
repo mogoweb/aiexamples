@@ -2,9 +2,15 @@
 
 //引入本地json数据
 var dogs_json = require('../../utils/dogs_data.js');
+var upng = require('../../utils/upng-js/UPNG.js');
+
+// Convert from normal to web-safe, strip trailing "="s
+function webSafe64(base64) {
+  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
 
 // 获取图像RGB数据
-var getImageRGB = function (canvasId, imgUrl, callback, imgWidth, imgHeight) {
+var getImageBase64 = function (canvasId, imgUrl, callback, imgWidth, imgHeight) {
   console.log("entering getBase64Image");
   const ctx = wx.createCanvasContext(canvasId);
   ctx.drawImage(imgUrl, 0, 0, imgWidth || 299, imgHeight || 299);
@@ -21,25 +27,14 @@ var getImageRGB = function (canvasId, imgUrl, callback, imgWidth, imgHeight) {
         var result = res;
         console.log("buf:" + [result.data.buffer]);
 
-        var i, j;
-        var rows = [];
-        for (i = 0; i < result.width; i++) {
-          var cols = [];
-          for (j = 0; j < result.height; j++) {
-            var rgb = [];
-            var index = i * result.width + j * 4;         // 每个点包含RGBA 4个分量
-            rgb.push(result.data[index] / 255);       // r
-            rgb.push(result.data[index + 1] / 255);   // g
-            rgb.push(result.data[index + 2] / 255);   // b
-            // 忽略alpha值
+        // png编码
+        var pngData = upng.encode([result.data.buffer], result.width, result.height);
+        // base64编码
+        var base64Data = wx.arrayBufferToBase64(pngData);
+        // web safe
+        var base64DataSafe = webSafe64(base64Data)
 
-            cols.push(rgb);
-          }
-          rows.push(cols);
-        }
-
-        console.log("rows:" + rows);
-        callback(rows);
+        callback(base64DataSafe);
       },
       fail: e => {
         console.error(e);
@@ -85,13 +80,13 @@ Page({
     var filePath = this.data.imgUrl;
     var that = this;
 
-    getImageRGB('dogCanvas', filePath, function (rgbData) {
+    getImageBase64('dogCanvas', filePath, function (base64Data) {
       //  在此处得到的RGB数据
-      console.log("getImageRGB");
+      console.log("getImageBase64");
       var json_data = {
-        "model_name": "default", "data": { "image": [] }
+        "model_name": "default", model_version: 2, "data": { "image": "" }
       }
-      json_data["data"]["image"] = [rgbData];
+      json_data["data"]["image"] = base64Data;
       console.log("json_data:" + json_data);
 
       wx.request({
