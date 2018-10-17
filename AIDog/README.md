@@ -26,7 +26,31 @@
  * wxapplet
  
    包含微信小程序的源码。
+
+ * tflite
+
+   - android - 采用Tensorflow Lite的Android源码，在手机端实现狗狗识别。
+   - scripts - 包含从mobilenet重新训练的脚本以及相关显示脚本
   
 #### 相关文档
 
-    
+1. [当微信小程序遇上TensorFlow：Server端实现](https://mp.weixin.qq.com/s/_sKhfx1lIiIiWYKWkpGMcQ)
+2. [当微信小程序遇上TensorFlow：Server端实现补充](https://mp.weixin.qq.com/s/Jl-4wfZ6Zl_bRnfdLvO2Fw)
+3. [当微信小程序遇上TensorFlow：小程序实现](https://mp.weixin.qq.com/s/d2OR5Yn8hOneiTKhyUfWXg)
+4. [当微信小程序遇上TensorFlow：接收base64编码图像数据](https://mp.weixin.qq.com/s/QBw4zcViFeKQQKoYKDQj6Q)
+
+另外关于Tensorflow SavedModel模型，您还可以阅读：
+1. [Tensorflow SavedModel模型的保存与加载](https://mp.weixin.qq.com/s/s-tJxJZS898RorCq4xV_Ug)
+2. [如何查看Tensorflow SavedModel格式模型的信息](https://mp.weixin.qq.com/s/Mj97KSbAb6vaJDp0p5DI0A)
+3. [如何合并两个TensorFlow模型](https://mp.weixin.qq.com/s/nJkhDwtmxzS-LN4g3hDoEw)
+
+关于Android版本的Tensorflow Lite，您可以阅读：
+
+1. [这个中秋，我开发了一个识别狗狗的app](https://mp.weixin.qq.com/s/JT1brb5QWgM8xFpJMdtK-w)
+2. [TensorFlow在移动设备与嵌入式设备上的轻量级跨平台解决方案 | Google 开发者大会 2018](https://mp.weixin.qq.com/s/8v8zK492SxuJdWlt5qq5Zg)
+3. [如何将自己开发的模型转换为TensorFlow Lite可用模型](https://mp.weixin.qq.com/s/AIQtlNNEb0lKyshGZcpZAw)
+4. [Android上的TensorFlow Lite，了解一下？](https://mp.weixin.qq.com/s/9V4fd3iFCl5NaeH8iTRR8g)
+
+您还可以关注我的微信公众号：云水木石，一个专注于机器学习的个人空间。
+
+![image](http://images.ilego.club/wx/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7_%E5%8D%9A%E5%AE%A2%E7%94%A8.png)
