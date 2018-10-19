@@ -1,3 +1,7 @@
+### 注意
+
+**`重要`**，AIDog已经独立为一个单独的项目，本目录下的代码将不再更新，最新代码请参考：https://github.com/mogoweb/AIDog
+
 ### AIDog
 
 一款从图片识别狗的类别的应用，包括Android版和微信小程序版。
