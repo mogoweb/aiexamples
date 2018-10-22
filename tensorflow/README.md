@@ -21,3 +21,12 @@
   * hwdigits.py - 采用线性回归模型实现手写数字识别
   * cnn_mnist.py - 采用卷积神经网络实现手写数字识别
   * mlp_minist.py - 采用多层全连接网络实现手写数字识别
+
+* autoencoder
+
+  自编码器的实现。
+  
+* object_detection
+
+  目标检测的示例代码。
+ 
