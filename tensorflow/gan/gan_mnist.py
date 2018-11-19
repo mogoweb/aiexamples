@@ -96,7 +96,7 @@ if not os.path.exists('output/'):
 
 i = 0
 for it in range(60000):
-  if it % 1000 == 0:
+  if it % 10000 == 0:
     samples = sess.run(G_sample, feed_dict={Z: sample_Z(16, Z_dim)})
 
     fig = plot(samples)
@@ -115,4 +115,10 @@ for it in range(60000):
     print('G_loss: {:.4}'.format(G_loss_curr))
     print()
 
-imageio.mimsave(os.path.join("outputs", 'samples.gif'), samples, fps=5)
+images = []
+for file_name in os.listdir('output'):
+    if file_name.endswith('.png'):
+        file_path = os.path.join('output', file_name)
+        images.append(imageio.imread(file_path))
+
+imageio.mimsave(os.path.join("output", 'samples.gif'), images, fps=1)
