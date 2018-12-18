@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "538364256117",
+    "firebase_url": "https://thuglifestyle-28cfa.firebaseio.com",
+    "project_id": "thuglifestyle-28cfa",
+    "storage_bucket": "thuglifestyle-28cfa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:538364256117:android:f8d6416cc3ef682c",
+        "android_client_info": {
+          "package_name": "com.mogoweb.thuglife"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "538364256117-mttoh9ivi9ia1bt7m5cac3sajddkb5lj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3PCXQl1h3z08gICG4diStVe8TwbKklrU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
