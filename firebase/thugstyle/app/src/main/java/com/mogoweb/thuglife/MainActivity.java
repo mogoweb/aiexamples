@@ -18,9 +18,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkAndRequestCameraPermission();
+
         setContentView(R.layout.activity_main);
         cameraView = (CameraView)findViewById(R.id.camera_view);
+        overlayView = (OverlayView)findViewById(R.id.overlay_view);
+
+        checkAndRequestCameraPermission();
     }
 
     private void checkAndRequestCameraPermission() {
