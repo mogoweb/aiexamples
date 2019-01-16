@@ -1,6 +1,9 @@
 from sklearn.preprocess import LabelBinarizer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
+
+import sys
+sys.path.append('..')
 from pyimagesearch.preprocessing import ImageToArrayPreprocessor
 from pyimagesearch.preprocessing import AspectAwarePreprocessor
 from pyimagesearch.datasets import SimpleDatasetLoader
