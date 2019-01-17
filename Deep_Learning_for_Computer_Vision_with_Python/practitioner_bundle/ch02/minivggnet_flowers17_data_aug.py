@@ -9,6 +9,7 @@ from pyimagesearch.preprocessing.aspectawarepreprocessor import AspectAwarePrepr
 from pyimagesearch.datasets.simpledatasetloader import SimpleDatasetLoader
 from pyimagesearch.nn.minivggnet import MiniVGGNet
 from keras.optimizers import SGD
+from keras.preprocessing.image import ImageDataGenerator
 from imutils import paths
 import matplotlib.pyplot as plt
 import numpy as np
@@ -37,14 +38,17 @@ data = data.astype("float") / 255.0
 trainY = LabelBinarizer().fit_transform(trainY)
 testY = LabelBinarizer().fit_transform(testY)
 
+aug = ImageDataGenerator(rotation_range=30, width_shift_range=0.1, height_shift_range=0.1,
+                         shear_range=0.2, zoom_range=0.2, horizontal_flip=True, fill_mode="nearest")
+
 print("[INFO] compiling model ...")
 opt = SGD(lr=0.05)
 model = MiniVGGNet.build(width=64, height=64, depth=3, classes=len(classNames))
 model.compile(loss="categorical_crossentropy", optimizer=opt, metrics=["accuracy"])
 
 print("[INFO] training network ...")
-H = model.fit(trainX, trainY, validation_data=(testX, testY),
-              batch_size=32, epochs=100, verbose=1)
+H = model.fit_generator(aug.flow(trainX, trainY, batch_size=32), validation_data=(testX, testY),
+              steps_per_epoch=len(trainX) // 32, epochs=100, verbose=1)
 
 print("[INFO] evaluating network ...")
 predictions = model.predict(testX, batch_size=32)
