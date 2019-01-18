@@ -17,3 +17,7 @@
 * keras
 
   与深度学习框架keras相关的例子，与tensorflow存在一些交集
+
+* Deep_Learning_for_Computer_Vision_with_Python
+
+  《Deep Learning for Computer Vision with Python》是一本非常棒的深度学习和计算机视觉编程书籍，这里包含了我在学习本书过程中敲入的示例代码。
