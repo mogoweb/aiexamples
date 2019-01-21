@@ -20,7 +20,7 @@ class HDF5DatasetWriter:
 
 
   def add(self, rows, labels):
-    self.buffer["data"].extens(rows)
+    self.buffer["data"].extend(rows)
     self.buffer["labels"].extend(labels)
 
     if len(self.buffer["data"]) >= self.buf_size:
