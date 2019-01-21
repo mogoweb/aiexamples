@@ -6,7 +6,7 @@ from imutils import paths
 import argparse
 
 import sys
-sys.path.append('..')
+sys.path.append('../..')
 from pyimagesearch.datasets.simpledatasetloader import SimpleDatasetLoader
 from pyimagesearch.preprocessing.simplepreprocessor import SimplePreprocessor
 
