@@ -16,7 +16,7 @@ print(args["model"])
 model = pickle.loads(open(args["model"], "rb").read())
 
 db = h5py.File(args["db"], "r")
-i = int(db["labels"].shape() * 0.75)
+i = int(db["labels"].shape[0] * 0.75)
 
 print("[INFO] predictinng ...")
 preds = model.predict_proba(db["features"][i:])

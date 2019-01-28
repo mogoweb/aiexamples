@@ -26,7 +26,7 @@ preds = model.predict(db["features"][i:])
 print(classification_report(db["labels"][i:], preds, target_names=db["label_names"]))
 
 print("[INFO] saving model ...")
-f = open(args["model"], "w")
+f = open(args["model"], "wb")
 f.write(pickle.dumps(model.best_estimator_))
 f.close()
 
