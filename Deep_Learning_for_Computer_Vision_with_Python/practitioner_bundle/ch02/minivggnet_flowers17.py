@@ -7,7 +7,7 @@ sys.path.append('../..')
 from pyimagesearch.preprocessing.image_to_array_preprocessor import ImageToArrayPreprocessor
 from pyimagesearch.preprocessing.aspectawarepreprocessor import AspectAwarePreprocessor
 from pyimagesearch.datasets.simpledatasetloader import SimpleDatasetLoader
-from pyimagesearch.nn.minivggnet import MiniVGGNet
+from pyimagesearch.nn.conv.minivggnet import MiniVGGNet
 from keras.optimizers import SGD
 from imutils import paths
 import matplotlib.pyplot as plt
