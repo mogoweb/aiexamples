@@ -19,7 +19,7 @@ from pyimagesearch.nn.conv.minivggnet import MiniVGGNet
 ap = argparse.ArgumentParser()
 ap.add_argument("-o", "--output", required=True, help="path to output directory")
 ap.add_argument("-m", "--models", required=True, help="path to output models directory")
-ap.add_argument("-n", "--num-models", type=int, default=5, help="# of models to train")
+ap.add_argument("-n", "--num", type=int, default=5, help="# of models to train")
 args = vars(ap.parse_args())
 
 
@@ -37,8 +37,8 @@ labelNames = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "h
 aug = ImageDataGenerator(rotation_range=10, width_shift_range=0.1, height_shift_range=0.1, horizontal_flip=True,
                          fill_mode="nearest")
 
-for i in np.arange(0, args["num-models"]):
-  print("[INFO] training model {}/{}".format(i + 1, args["num-models"]))
+for i in np.arange(0, args["num"]):
+  print("[INFO] training model {}/{}".format(i + 1, args["num"]))
   opt = SGD(lr=0.01, decay=0.01/40, momentum=0.9, nesterov=True)
   model = MiniVGGNet.build(width=32, height=32, depth=3, classes=10)
   model.compile(loss="categorical_crossentropy", optimizer=opt, metrics=["accuracy"])
@@ -53,3 +53,18 @@ for i in np.arange(0, args["num-models"]):
   f = open(os.path.sep.join(p), "w")
   f.write(report)
   f.close()
+
+  # plot the training loss and accuracy
+  p = [args["output"], "model_{}.png".format(i)]
+  plt.style.use("ggplot")
+  plt.figure()
+  plt.plot(np.arange(0, 40), H.history["loss"], label="train_loss")
+  plt.plot(np.arange(0, 40), H.history["val_loss"], label="validate_loss")
+  plt.plot(np.arange(0, 40), H.history["acc"], label="train_accuracy")
+  plt.plot(np.arange(0, 40), H.history["val_acc"], label="validate_accuracy")
+  plt.title("Training loss and accuracy for model {}".format(i))
+  plt.xlabel("Epoch #")
+  plt.ylabel("Loss/Accuracy")
+  plt.legend()
+  plt.savefig(os.path.sep.join(p))
+  plt.close()
