@@ -19,7 +19,7 @@ labelNames = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "h
 lb = LabelBinarizer()
 testY = lb.fit_transform(testY)
 
-model_paths = os.path.sep.join(args["models"], "*.model")
+model_paths = os.path.join(args["models"], "*.model")
 model_paths = list(glob.glob(model_paths))
 models = []
 
