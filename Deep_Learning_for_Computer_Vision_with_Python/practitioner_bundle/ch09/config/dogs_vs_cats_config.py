@@ -1,5 +1,5 @@
 # define the path to the image directory
-IMAGE_PATH = "../../datasets/kaggle_dogs_vs_cats/train"
+IMAGES_PATH = "../../datasets/kaggle_dogs_vs_cats/train"
 
 NUM_CLASSES = 2
 NUM_VAL_IMAGES = 1250 * NUM_CLASSES
