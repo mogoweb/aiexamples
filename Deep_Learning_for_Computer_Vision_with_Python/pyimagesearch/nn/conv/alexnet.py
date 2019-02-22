@@ -22,7 +22,7 @@ class AlexNet:
       channel_dim = 1
 
     # block #1: CONV => RELU => POOL
-    model.add(Conv2D(96, (11, 11), striders=(4, 4), input_shape=input_shape,
+    model.add(Conv2D(96, (11, 11), strides=(4, 4), input_shape=input_shape,
                      padding="same", kernel_regularizer=l2(reg)))
     model.add(Activation("relu"))
     model.add(BatchNormalization(axis=channel_dim))
