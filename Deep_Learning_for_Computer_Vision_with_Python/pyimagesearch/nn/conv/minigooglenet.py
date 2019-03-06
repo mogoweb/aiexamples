@@ -36,7 +36,7 @@ class MiniGoogleNet:
   @staticmethod
   def downsample_module(x, k, channel_dim):
     # define the CONV module and POOL, then concatenate across the channel dimension
-    conv_3x3 = MiniGoogleNet.conv_module(x, k, 3, 3, (2, 2), channel_dim=channel_dim)
+    conv_3x3 = MiniGoogleNet.conv_module(x, k, 3, 3, (2, 2), channel_dim=channel_dim, padding="valid")
     pool = MaxPooling2D((3, 3), strides=(2, 2))(x)
     x = concatenate([conv_3x3, pool], axis=channel_dim)
 
